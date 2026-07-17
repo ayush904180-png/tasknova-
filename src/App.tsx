@@ -8,8 +8,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { AppProvider } from './context/AppContext';
 import { AppRoute } from './types';
 import { LayoutShell } from './components/layout/LayoutShell';
-import { Hero } from './components/features/Hero';
-import { FeaturesGrid } from './components/features/FeaturesGrid';
+import { LandingPage } from './components/features/LandingPage';
 import { SandboxTasks } from './components/features/SandboxTasks';
 import { ArchitectureHub } from './components/features/ArchitectureHub';
 import { DesignSystemExplorer } from './components/features/DesignSystemExplorer';
@@ -75,8 +74,7 @@ function MainAppContent() {
         
         {activeRoute === AppRoute.HOME && (
           <div className="space-y-16 animate-fade-in">
-            <Hero setActiveRoute={setActiveRoute} />
-            <FeaturesGrid />
+            <LandingPage setActiveRoute={setActiveRoute} />
           </div>
         )}
 

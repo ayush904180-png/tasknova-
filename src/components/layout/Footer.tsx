@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Cpu, Heart, Globe, ArrowUpRight, ArrowUp, Send, CheckCircle2 } from 'lucide-react';
+import { Cpu, Heart, Globe, ArrowUpRight, ArrowUp, Send, CheckCircle2, Twitter, Github, MessageSquare } from 'lucide-react';
 import { AppRoute } from '../../types';
 import { useApp } from '../../context/AppContext';
 
@@ -138,10 +138,10 @@ export function Footer({ setActiveRoute }: FooterProps) {
             </ul>
           </div>
 
-          {/* Resources / Developer links */}
+          {/* Resources / Support links */}
           <div className="space-y-3 text-left">
             <h4 className="text-[10px] font-mono font-bold text-slate-900 dark:text-slate-300 uppercase tracking-widest">
-              Resources & Legal
+              Resources & Node
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
@@ -160,19 +160,11 @@ export function Footer({ setActiveRoute }: FooterProps) {
                   Contact Inquiries
                 </button>
               </li>
-              <li>
-                <button
-                  onClick={() => handleRouteNavigation(AppRoute.MAINTENANCE)}
-                  className="hover:text-slate-950 dark:hover:text-white transition-colors cursor-pointer text-left"
-                >
-                  Legal Status
-                </button>
-              </li>
               {isDeveloperMode && (
                 <li>
                   <button
                     onClick={() => handleRouteNavigation(AppRoute.BLUEPRINT)}
-                    className="text-indigo-500 font-bold dark:text-indigo-400 hover:underline transition-colors cursor-pointer text-left"
+                    className="text-indigo-500 font-bold dark:text-indigo-400 hover:underline transition-colors cursor-pointer text-left animate-pulse"
                   >
                     Architecture Hub
                   </button>
@@ -181,43 +173,94 @@ export function Footer({ setActiveRoute }: FooterProps) {
             </ul>
           </div>
 
-          {/* Newsletter Form section */}
+          {/* Legal / Compliance links */}
           <div className="space-y-3 text-left">
             <h4 className="text-[10px] font-mono font-bold text-slate-900 dark:text-slate-300 uppercase tracking-widest">
-              Telemetry Updates
+              Legal & Privacy
             </h4>
-            <p className="text-xs text-slate-400 dark:text-zinc-500 leading-normal font-sans font-light">
-              Subscribe to standard system updates and alignment task logs.
-            </p>
-            {!subscribed ? (
-              <form onSubmit={handleSubscribe} className="flex gap-1.5 mt-2">
-                <input
-                  type="email"
-                  placeholder="name@corporation.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="flex-grow text-xs bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-sans"
-                  required
-                />
+            <ul className="space-y-2 text-xs">
+              <li>
                 <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="h-8 w-8 bg-slate-950 text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 flex items-center justify-center rounded-lg cursor-pointer transition-all disabled:opacity-60"
-                  title="Subscribe"
+                  onClick={() => handleRouteNavigation(AppRoute.MAINTENANCE)}
+                  className="hover:text-slate-950 dark:hover:text-white transition-colors cursor-pointer text-left"
                 >
-                  {isSubmitting ? (
-                    <div className="h-3 w-3 border-2 border-slate-400 border-t-white dark:border-t-black rounded-full animate-spin" />
-                  ) : (
-                    <Send className="h-3.5 w-3.5" />
-                  )}
+                  Privacy Policy
                 </button>
-              </form>
-            ) : (
-              <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-mono text-xs mt-2">
-                <CheckCircle2 className="h-4 w-4" />
-                <span>Subscription verified!</span>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleRouteNavigation(AppRoute.MAINTENANCE)}
+                  className="hover:text-slate-950 dark:hover:text-white transition-colors cursor-pointer text-left"
+                >
+                  Terms of Service
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleRouteNavigation(AppRoute.MAINTENANCE)}
+                  className="hover:text-slate-950 dark:hover:text-white transition-colors cursor-pointer text-left"
+                >
+                  Security SLA
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          {/* Telemetry Updates & Social Nodes */}
+          <div className="space-y-4 text-left">
+            <div>
+              <h4 className="text-[10px] font-mono font-bold text-slate-900 dark:text-slate-300 uppercase tracking-widest">
+                Telemetry Updates
+              </h4>
+              <p className="text-xs text-slate-400 dark:text-zinc-500 leading-normal font-sans font-light mt-1.5">
+                Subscribe to system updates and alignment task logs.
+              </p>
+              {!subscribed ? (
+                <form onSubmit={handleSubscribe} className="flex gap-1.5 mt-2">
+                  <input
+                    type="email"
+                    placeholder="name@corporation.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="flex-grow text-xs bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-sans"
+                    required
+                  />
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="h-8 w-8 bg-slate-950 text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 flex items-center justify-center rounded-lg cursor-pointer transition-all disabled:opacity-60"
+                    title="Subscribe"
+                  >
+                    {isSubmitting ? (
+                      <div className="h-3 w-3 border-2 border-slate-400 border-t-white dark:border-t-black rounded-full animate-spin" />
+                    ) : (
+                      <Send className="h-3.5 w-3.5" />
+                    )}
+                  </button>
+                </form>
+              ) : (
+                <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-mono text-xs mt-2">
+                  <CheckCircle2 className="h-4 w-4" />
+                  <span>Subscription verified!</span>
+                </div>
+              )}
+            </div>
+
+            {/* Social network nodes */}
+            <div className="pt-2">
+              <span className="text-[9px] font-mono uppercase tracking-wider text-slate-400 dark:text-zinc-600 block mb-2">Social Nodes</span>
+              <div className="flex items-center gap-3">
+                <a href="#twitter" className="h-7 w-7 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0c0e] hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors" title="TaskNova X (Twitter) Node">
+                  <Twitter className="h-3.5 w-3.5" />
+                </a>
+                <a href="#github" className="h-7 w-7 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0c0e] hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors" title="TaskNova GitHub Node">
+                  <Github className="h-3.5 w-3.5" />
+                </a>
+                <a href="#discord" className="h-7 w-7 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0c0e] hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors" title="TaskNova Community Node">
+                  <MessageSquare className="h-3.5 w-3.5" />
+                </a>
               </div>
-            )}
+            </div>
           </div>
 
         </div>
