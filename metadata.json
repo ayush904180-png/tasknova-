@@ -1,0 +1,6 @@
+{
+  "name": "TaskNova AI",
+  "description": "TaskNova AI is an AI-powered Human Intelligence Platform where users complete simple micro tasks to collect high-quality human feedback for AI systems, businesses, and creators.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
