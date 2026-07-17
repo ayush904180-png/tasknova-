@@ -6,7 +6,7 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Compass, Target, Award, Users, BookOpen, Info, Mail, Terminal, Palette,
-  X, Lock, Cpu, Code, Settings, ShieldAlert, AlertCircle
+  X, Lock, Cpu, Code, Settings, ShieldAlert, AlertCircle, Sparkles
 } from 'lucide-react';
 import { AppRoute } from '../../types';
 import { useApp } from '../../context/AppContext';
@@ -36,6 +36,7 @@ export function MobileDrawer({ isOpen, onClose, activeRoute, setActiveRoute }: M
         { route: AppRoute.HOME, label: 'Overview', icon: Compass },
         { route: AppRoute.SANDBOX, label: 'Task Sandbox', icon: Target },
         { route: AppRoute.IDENTITY, label: 'Secure Portal', icon: Lock },
+        { route: AppRoute.ONBOARDING, label: 'Onboarding Loop', icon: Sparkles },
         { route: AppRoute.REWARDS, label: 'Rewards Index', icon: Award },
         { route: AppRoute.LEADERBOARD, label: 'Leaderboard', icon: Users },
       ]

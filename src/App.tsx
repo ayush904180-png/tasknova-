@@ -14,6 +14,7 @@ import { SandboxTasks } from './components/features/SandboxTasks';
 import { ArchitectureHub } from './components/features/ArchitectureHub';
 import { DesignSystemExplorer } from './components/features/DesignSystemExplorer';
 import { AuthGateway } from './auth/components/AuthGateway';
+import { OnboardingShell } from './onboarding/components/OnboardingShell';
 import { 
   RewardsView, LeaderboardView, CommunityView, BlogView, AboutView, ContactView, ErrorViews 
 } from './components/features/AdditionalViews';
@@ -38,6 +39,7 @@ function MainAppContent() {
       [AppRoute.CONTACT]: 'Corporate Inquiries Node | TaskNova AI',
       [AppRoute.BLUEPRINT]: 'Architecture Hub Specifications | TaskNova AI',
       [AppRoute.IDENTITY]: 'Identity Secure Gate | TaskNova AI',
+      [AppRoute.ONBOARDING]: 'User Onboarding Calibration | TaskNova AI',
       [AppRoute.DESIGN_SYSTEM]: 'TaskNova Global Design System | TaskNova AI',
       [AppRoute.ERROR_404]: '404 - Not Found | TaskNova AI',
       [AppRoute.ERROR_500]: '500 - Server Panic | TaskNova AI',
@@ -163,6 +165,12 @@ function MainAppContent() {
         {activeRoute === AppRoute.IDENTITY && (
           <div className="space-y-8 animate-fade-in">
             <AuthGateway />
+          </div>
+        )}
+
+        {activeRoute === AppRoute.ONBOARDING && (
+          <div className="space-y-8 animate-fade-in">
+            <OnboardingShell onComplete={() => setActiveRoute(AppRoute.HOME)} />
           </div>
         )}
 
