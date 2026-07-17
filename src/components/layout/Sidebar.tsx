@@ -34,6 +34,7 @@ export function Sidebar({ activeRoute, setActiveRoute }: SidebarProps) {
       items: [
         { route: AppRoute.HOME, label: 'Overview', icon: Compass },
         { route: AppRoute.SANDBOX, label: 'Task Sandbox', icon: Target },
+        { route: AppRoute.IDENTITY, label: 'Secure Portal', icon: Lock },
         { route: AppRoute.REWARDS, label: 'Rewards Index', icon: Award },
         { route: AppRoute.LEADERBOARD, label: 'Leaderboard', icon: Users },
       ]

@@ -6,12 +6,14 @@
 import { useState, useEffect } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { AppProvider } from './context/AppContext';
+import { AuthProvider } from './auth/providers/AuthProvider';
 import { AppRoute } from './types';
 import { LayoutShell } from './components/layout/LayoutShell';
 import { LandingPage } from './components/features/LandingPage';
 import { SandboxTasks } from './components/features/SandboxTasks';
 import { ArchitectureHub } from './components/features/ArchitectureHub';
 import { DesignSystemExplorer } from './components/features/DesignSystemExplorer';
+import { AuthGateway } from './auth/components/AuthGateway';
 import { 
   RewardsView, LeaderboardView, CommunityView, BlogView, AboutView, ContactView, ErrorViews 
 } from './components/features/AdditionalViews';
@@ -35,6 +37,7 @@ function MainAppContent() {
       [AppRoute.ABOUT]: 'Mission & Team - About Us | TaskNova AI',
       [AppRoute.CONTACT]: 'Corporate Inquiries Node | TaskNova AI',
       [AppRoute.BLUEPRINT]: 'Architecture Hub Specifications | TaskNova AI',
+      [AppRoute.IDENTITY]: 'Identity Secure Gate | TaskNova AI',
       [AppRoute.DESIGN_SYSTEM]: 'TaskNova Global Design System | TaskNova AI',
       [AppRoute.ERROR_404]: '404 - Not Found | TaskNova AI',
       [AppRoute.ERROR_500]: '500 - Server Panic | TaskNova AI',
@@ -157,6 +160,12 @@ function MainAppContent() {
           </div>
         )}
 
+        {activeRoute === AppRoute.IDENTITY && (
+          <div className="space-y-8 animate-fade-in">
+            <AuthGateway />
+          </div>
+        )}
+
       </div>
     </LayoutShell>
   );
@@ -165,9 +174,11 @@ function MainAppContent() {
 export default function App() {
   return (
     <ThemeProvider>
-      <AppProvider>
-        <MainAppContent />
-      </AppProvider>
+      <AuthProvider>
+        <AppProvider>
+          <MainAppContent />
+        </AppProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

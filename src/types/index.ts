@@ -9,6 +9,7 @@
 export enum AppRoute {
   HOME = 'home',
   SANDBOX = 'sandbox',
+  IDENTITY = 'identity',
   BLUEPRINT = 'blueprint',
   DESIGN_SYSTEM = 'design-system',
   REWARDS = 'rewards',
