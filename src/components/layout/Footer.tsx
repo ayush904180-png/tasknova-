@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Cpu, Heart, Globe, ArrowUpRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Cpu, Heart, Globe, ArrowUpRight, ArrowUp, Send, CheckCircle2 } from 'lucide-react';
 import { AppRoute } from '../../types';
+import { useApp } from '../../context/AppContext';
 
 interface FooterProps {
   setActiveRoute: (route: AppRoute) => void;
@@ -12,115 +14,218 @@ interface FooterProps {
 
 export function Footer({ setActiveRoute }: FooterProps) {
   const currentYear = new Date().getFullYear();
+  const { isDeveloperMode, simulateRouteTransition } = useApp();
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showBackToTop, setShowBackToTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 300);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleRouteNavigation = (route: AppRoute) => {
+    simulateRouteTransition(() => setActiveRoute(route));
+  };
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    setIsSubmitting(true);
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setSubscribed(true);
+      setEmail('');
+    }, 1200);
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
-    <footer className="w-full border-t border-slate-200 bg-white py-12 dark:border-white/5 dark:bg-[#030303] text-slate-500 transition-colors">
+    <footer className="w-full border-t border-slate-200 bg-white py-12 dark:border-white/5 dark:bg-[#030303] text-slate-500 transition-colors relative" id="tasknova-saas-footer">
+      
+      {/* Scroll Progress and Back To Top triggers */}
+      {showBackToTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-24 lg:bottom-8 right-6 z-40 flex h-10 w-10 items-center justify-center rounded-full border border-slate-200/80 bg-white shadow-xl text-slate-500 hover:text-slate-900 dark:border-white/10 dark:bg-[#0c0c0e] dark:text-zinc-400 dark:hover:text-white transition-all transform hover:scale-105 cursor-pointer focus:outline-none"
+          title="Back to top"
+        >
+          <ArrowUp className="h-4.5 w-4.5" />
+        </button>
+      )}
+
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           
           {/* Brand bio block */}
-          <div className="md:col-span-2">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-900 text-white dark:bg-gradient-to-br dark:from-indigo-500 dark:via-purple-600 dark:to-pink-500">
-                <Cpu className="h-3.5 w-3.5 text-brand-500 dark:text-white" />
+          <div className="md:col-span-1 space-y-4">
+            <div className="flex items-center gap-2">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-900 text-white dark:bg-gradient-to-br dark:from-indigo-500 dark:to-purple-600">
+                <Cpu className="h-3.5 w-3.5 text-white" />
               </div>
               <span className="font-display font-bold text-slate-900 dark:text-white tracking-tight uppercase">
                 TaskNova AI
               </span>
             </div>
-            <p className="text-xs text-slate-500 dark:text-zinc-400 max-w-sm leading-relaxed mb-4">
-              The professional intelligence layer for modern LLM development. We transform complex human intuition into structured datasets for global enterprises.
+            <p className="text-xs text-slate-500 dark:text-zinc-400 leading-relaxed font-sans font-light">
+              The professional human intelligence layer for large-scale RLHF, model alignment, and multimodal validation datasets.
             </p>
             {/* Target Audience Coverage indicators */}
-            <div className="flex flex-wrap items-center gap-2 mt-4">
-              <span className="text-[10px] uppercase font-mono tracking-wider font-semibold text-slate-400 flex items-center gap-1 dark:text-zinc-500">
-                <Globe className="h-3 w-3 text-slate-400 dark:text-zinc-500" /> Markets:
+            <div className="flex flex-wrap items-center gap-1.5 mt-4">
+              <span className="text-[10px] uppercase font-mono tracking-wider font-semibold text-slate-400 dark:text-zinc-500 flex items-center gap-1">
+                <Globe className="h-3 w-3" /> Nodes:
               </span>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-brand-50 text-brand-700 dark:bg-indigo-500/10 dark:text-indigo-400 border border-brand-100 dark:border-indigo-500/20 font-mono">
-                India (Primary)
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-150 text-slate-600 dark:bg-white/5 dark:text-zinc-400 font-mono">
+                IN (Core)
               </span>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-600 dark:bg-white/5 dark:text-zinc-400 border border-slate-200 dark:border-white/5 font-mono">
-                USA
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-150 text-slate-600 dark:bg-white/5 dark:text-zinc-400 font-mono">
+                US
               </span>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-600 dark:bg-white/5 dark:text-zinc-400 border border-slate-200 dark:border-white/5 font-mono">
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-150 text-slate-600 dark:bg-white/5 dark:text-zinc-400 font-mono">
                 UK
               </span>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-600 dark:bg-white/5 dark:text-zinc-400 border border-slate-200 dark:border-white/5 font-mono">
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-150 text-slate-600 dark:bg-white/5 dark:text-zinc-400 font-mono">
                 CA
-              </span>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-600 dark:bg-white/5 dark:text-zinc-400 border border-slate-200 dark:border-white/5 font-mono">
-                AU
-              </span>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-600 dark:bg-white/5 dark:text-zinc-400 border border-slate-200 dark:border-white/5 font-mono">
-                DE
               </span>
             </div>
           </div>
 
           {/* Directory Navigation links */}
-          <div>
-            <h4 className="text-xs font-mono font-semibold text-slate-900 dark:text-slate-300 uppercase tracking-wider mb-4">
-              Platform Sections
+          <div className="space-y-3 text-left">
+            <h4 className="text-[10px] font-mono font-bold text-slate-900 dark:text-slate-300 uppercase tracking-widest">
+              Platform
             </h4>
-            <ul className="space-y-2.5 text-xs">
+            <ul className="space-y-2 text-xs">
               <li>
                 <button
-                  onClick={() => setActiveRoute(AppRoute.HOME)}
-                  className="hover:text-slate-950 dark:hover:text-white transition-colors cursor-pointer flex items-center gap-1"
+                  onClick={() => handleRouteNavigation(AppRoute.HOME)}
+                  className="hover:text-slate-950 dark:hover:text-white transition-colors cursor-pointer text-left"
                 >
                   Overview & Vision
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() => setActiveRoute(AppRoute.SANDBOX)}
-                  className="hover:text-slate-950 dark:hover:text-white transition-colors cursor-pointer flex items-center gap-1"
+                  onClick={() => handleRouteNavigation(AppRoute.SANDBOX)}
+                  className="hover:text-slate-950 dark:hover:text-white transition-colors cursor-pointer text-left"
                 >
-                  Interactive Task Sandbox <ArrowUpRight className="h-3 w-3 opacity-65" />
+                  Task Sandbox
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() => setActiveRoute(AppRoute.BLUEPRINT)}
-                  className="hover:text-slate-950 dark:hover:text-white transition-colors cursor-pointer flex items-center gap-1"
+                  onClick={() => handleRouteNavigation(AppRoute.REWARDS)}
+                  className="hover:text-slate-950 dark:hover:text-white transition-colors cursor-pointer text-left flex items-center gap-1"
                 >
-                  Modular Architecture Hub
+                  Rewards Ledger <ArrowUpRight className="h-3 w-3 opacity-60" />
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleRouteNavigation(AppRoute.LEADERBOARD)}
+                  className="hover:text-slate-950 dark:hover:text-white transition-colors cursor-pointer text-left"
+                >
+                  Leaderboards
                 </button>
               </li>
             </ul>
           </div>
 
-          {/* Architectural specs links */}
-          <div>
-            <h4 className="text-xs font-mono font-semibold text-slate-900 dark:text-slate-300 uppercase tracking-wider mb-4">
-              SaaS Guidelines
+          {/* Resources / Developer links */}
+          <div className="space-y-3 text-left">
+            <h4 className="text-[10px] font-mono font-bold text-slate-900 dark:text-slate-300 uppercase tracking-widest">
+              Resources & Legal
             </h4>
-            <ul className="space-y-2.5 text-xs text-slate-400">
-              <li className="flex items-center gap-1">
-                <span className="h-1 w-1 rounded-full bg-slate-400"></span>
-                <span>SOLID Clean Architecture</span>
+            <ul className="space-y-2 text-xs">
+              <li>
+                <button
+                  onClick={() => handleRouteNavigation(AppRoute.ABOUT)}
+                  className="hover:text-slate-950 dark:hover:text-white transition-colors cursor-pointer text-left"
+                >
+                  About Corporate
+                </button>
               </li>
-              <li className="flex items-center gap-1">
-                <span className="h-1 w-1 rounded-full bg-slate-400"></span>
-                <span>Vite + React Core Foundations</span>
+              <li>
+                <button
+                  onClick={() => handleRouteNavigation(AppRoute.CONTACT)}
+                  className="hover:text-slate-950 dark:hover:text-white transition-colors cursor-pointer text-left"
+                >
+                  Contact Inquiries
+                </button>
               </li>
-              <li className="flex items-center gap-1">
-                <span className="h-1 w-1 rounded-full bg-slate-400"></span>
-                <span>Human-centric Alignments</span>
+              <li>
+                <button
+                  onClick={() => handleRouteNavigation(AppRoute.MAINTENANCE)}
+                  className="hover:text-slate-950 dark:hover:text-white transition-colors cursor-pointer text-left"
+                >
+                  Legal Status
+                </button>
               </li>
-              <li className="flex items-center gap-1">
-                <span className="h-1 w-1 rounded-full bg-slate-400"></span>
-                <span>India Dev Core Focus</span>
-              </li>
+              {isDeveloperMode && (
+                <li>
+                  <button
+                    onClick={() => handleRouteNavigation(AppRoute.BLUEPRINT)}
+                    className="text-indigo-500 font-bold dark:text-indigo-400 hover:underline transition-colors cursor-pointer text-left"
+                  >
+                    Architecture Hub
+                  </button>
+                </li>
+              )}
             </ul>
+          </div>
+
+          {/* Newsletter Form section */}
+          <div className="space-y-3 text-left">
+            <h4 className="text-[10px] font-mono font-bold text-slate-900 dark:text-slate-300 uppercase tracking-widest">
+              Telemetry Updates
+            </h4>
+            <p className="text-xs text-slate-400 dark:text-zinc-500 leading-normal font-sans font-light">
+              Subscribe to standard system updates and alignment task logs.
+            </p>
+            {!subscribed ? (
+              <form onSubmit={handleSubscribe} className="flex gap-1.5 mt-2">
+                <input
+                  type="email"
+                  placeholder="name@corporation.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="flex-grow text-xs bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-sans"
+                  required
+                />
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="h-8 w-8 bg-slate-950 text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 flex items-center justify-center rounded-lg cursor-pointer transition-all disabled:opacity-60"
+                  title="Subscribe"
+                >
+                  {isSubmitting ? (
+                    <div className="h-3 w-3 border-2 border-slate-400 border-t-white dark:border-t-black rounded-full animate-spin" />
+                  ) : (
+                    <Send className="h-3.5 w-3.5" />
+                  )}
+                </button>
+              </form>
+            ) : (
+              <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-mono text-xs mt-2">
+                <CheckCircle2 className="h-4 w-4" />
+                <span>Subscription verified!</span>
+              </div>
+            )}
           </div>
 
         </div>
 
         {/* Legal and credits */}
-        <div className="mt-12 pt-8 border-t border-slate-150 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+        <div className="mt-12 pt-8 border-t border-slate-150 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-sans font-light">
           <p>© {currentYear} TaskNova AI. Built for scalable human-feedback processing. MVP version 0.1.</p>
-          <p className="flex items-center gap-1 text-slate-400 font-mono">
+          <p className="flex items-center gap-1 text-slate-400 dark:text-zinc-500 font-mono">
             Crafted with <Heart className="h-3.5 w-3.5 text-rose-500 fill-rose-500" /> according to elite engineering guidelines.
           </p>
         </div>

@@ -10,7 +10,17 @@ export enum AppRoute {
   HOME = 'home',
   SANDBOX = 'sandbox',
   BLUEPRINT = 'blueprint',
-  DESIGN_SYSTEM = 'design-system'
+  DESIGN_SYSTEM = 'design-system',
+  REWARDS = 'rewards',
+  LEADERBOARD = 'leaderboard',
+  COMMUNITY = 'community',
+  BLOG = 'blog',
+  ABOUT = 'about',
+  CONTACT = 'contact',
+  ERROR_404 = 'error-404',
+  ERROR_500 = 'error-500',
+  OFFLINE = 'offline',
+  MAINTENANCE = 'maintenance',
 }
 
 /**

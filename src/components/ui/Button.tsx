@@ -16,6 +16,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   id?: string;
   disabled?: boolean;
+  type?: 'submit' | 'reset' | 'button';
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 }
 
