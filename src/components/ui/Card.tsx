@@ -65,6 +65,8 @@ export function CardBody({ children, className, ...props }: HTMLAttributes<HTMLD
   );
 }
 
+export { CardBody as CardContent };
+
 export function CardFooter({ children, className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div className={cn('px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between dark:bg-[#09090b]/50 dark:border-white/5', className)} {...props}>

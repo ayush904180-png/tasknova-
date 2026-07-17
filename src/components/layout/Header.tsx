@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Cpu, Sun, Moon, HelpCircle, Compass, Terminal, Target } from 'lucide-react';
+import { Cpu, Sun, Moon, HelpCircle, Compass, Terminal, Target, Palette } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { AppRoute } from '../../types';
 import { Button } from '../ui/Button';
@@ -82,6 +82,18 @@ export function Header({ activeRoute, setActiveRoute }: HeaderProps) {
           >
             <Terminal className="h-3.5 w-3.5" />
             <span>Architecture Hub</span>
+          </button>
+
+          <button
+            onClick={() => setActiveRoute(AppRoute.DESIGN_SYSTEM)}
+            className={`flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-lg transition-all duration-200 cursor-pointer ${
+              activeRoute === AppRoute.DESIGN_SYSTEM
+                ? 'bg-white text-slate-900 shadow-sm font-semibold dark:bg-white/10 dark:text-white'
+                : 'text-slate-500 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white'
+            }`}
+          >
+            <Palette className="h-3.5 w-3.5" />
+            <span>Design System</span>
           </button>
         </nav>
 

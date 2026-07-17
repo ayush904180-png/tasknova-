@@ -11,6 +11,7 @@ import { Hero } from './components/features/Hero';
 import { FeaturesGrid } from './components/features/FeaturesGrid';
 import { SandboxTasks } from './components/features/SandboxTasks';
 import { ArchitectureHub } from './components/features/ArchitectureHub';
+import { DesignSystemExplorer } from './components/features/DesignSystemExplorer';
 
 /**
  * Main TaskNova AI core entry shell.
@@ -59,6 +60,12 @@ function MainAppContent() {
             </div>
 
             <ArchitectureHub />
+          </div>
+        )}
+
+        {activeRoute === AppRoute.DESIGN_SYSTEM && (
+          <div className="space-y-8 animate-fade-in">
+            <DesignSystemExplorer />
           </div>
         )}
 
