@@ -13,6 +13,7 @@ import { Submission, SubmissionStatus, ValidationStatus } from '../../types/subm
 import { SubmissionStatusBadge, SubmissionEmptyState } from './SubmissionSharedComponents';
 import { SubmissionSummary, SubmissionPreview, SubmissionQueueCard } from './SubmissionPreviewComponents';
 import { SubmissionAdapter } from '../adapters/SubmissionAdapter';
+import { ValidationConsole } from '../../validation/components/ValidationConsole';
 
 // ==========================================
 // 1. DYNAMIC SUBMISSIONS HISTORIC TABLE
@@ -252,45 +253,68 @@ export function SubmissionHistory({ onSelect }: { onSelect: (sub: Submission) =>
 
 export function SubmissionShell() {
   const [selectedSub, setSelectedSub] = useState<Submission | null>(null);
+  const [viewMode, setViewMode] = useState<'submissions' | 'validation'>('submissions');
 
   return (
     <div className="space-y-6 text-left" id="submission-shell-master">
       {/* Title block */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 border-b border-zinc-850 pb-5">
         <div className="space-y-1">
           <h2 className="text-xl font-bold font-display text-white flex items-center gap-2">
             <Layers className="h-5 w-5 text-indigo-500" />
-            <span>Universal Submission Engine</span>
+            <span>Universal Submission & Validation Engine</span>
           </h2>
           <p className="text-xs text-slate-400 font-sans leading-relaxed">
-            Captured alignment validation ledger nodes. Coordinates consensus integrity verification audits.
+            Captured alignment validation ledger nodes and real-time AI Quality Intelligence validation matrices.
           </p>
         </div>
-      </div>
 
-      {/* Overview Analytics Cards */}
-      <SubmissionSummary />
-
-      {/* Network Health Check Card */}
-      <SubmissionQueueCard syncCount={0} />
-
-      {/* Double Column Workspace */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left Side: Submissions list with Filter selectors */}
-        <div className={`${selectedSub ? 'lg:col-span-7' : 'lg:col-span-12'} transition-all duration-300 space-y-4`}>
-          <SubmissionHistory onSelect={setSelectedSub} />
+        {/* View Mode controls */}
+        <div className="flex bg-zinc-950/80 border border-zinc-850 p-1 rounded-xl">
+          <button
+            onClick={() => setViewMode('submissions')}
+            className={`px-3 py-1.5 text-xs font-medium rounded-lg cursor-pointer transition-all ${viewMode === 'submissions' ? 'bg-indigo-600 text-white shadow font-semibold' : 'text-slate-400 hover:text-white'}`}
+          >
+            Submissions Ledger
+          </button>
+          <button
+            onClick={() => setViewMode('validation')}
+            className={`px-3 py-1.5 text-xs font-medium rounded-lg cursor-pointer transition-all ${viewMode === 'validation' ? 'bg-indigo-600 text-white shadow font-semibold' : 'text-slate-400 hover:text-white'}`}
+          >
+            AI Quality Console
+          </button>
         </div>
-
-        {/* Right Side: Selected Submission Preview Inspector */}
-        {selectedSub && (
-          <div className="lg:col-span-5 h-[580px] lg:sticky lg:top-4 animate-fade-in">
-            <SubmissionPreview 
-              submission={selectedSub} 
-              onClose={() => setSelectedSub(null)} 
-            />
-          </div>
-        )}
       </div>
+
+      {viewMode === 'submissions' ? (
+        <>
+          {/* Overview Analytics Cards */}
+          <SubmissionSummary />
+
+          {/* Network Health Check Card */}
+          <SubmissionQueueCard syncCount={0} />
+
+          {/* Double Column Workspace */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* Left Side: Submissions list with Filter selectors */}
+            <div className={`${selectedSub ? 'lg:col-span-7' : 'lg:col-span-12'} transition-all duration-300 space-y-4`}>
+              <SubmissionHistory onSelect={setSelectedSub} />
+            </div>
+
+            {/* Right Side: Selected Submission Preview Inspector */}
+            {selectedSub && (
+              <div className="lg:col-span-5 h-[580px] lg:sticky lg:top-4 animate-fade-in">
+                <SubmissionPreview 
+                  submission={selectedSub} 
+                  onClose={() => setSelectedSub(null)} 
+                />
+              </div>
+            )}
+          </div>
+        </>
+      ) : (
+        <ValidationConsole />
+      )}
     </div>
   );
 }

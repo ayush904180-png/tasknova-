@@ -21,6 +21,7 @@ import {
 } from './components/features/AdditionalViews';
 import { SubmissionProvider } from './submissions/context/SubmissionContext';
 import { SubmissionShell } from './submissions/components/SubmissionShell';
+import { ValidationProvider } from './validation/context/ValidationContext';
 
 /**
  * Main TaskNova AI core entry shell.
@@ -202,7 +203,9 @@ export default function App() {
       <AuthProvider>
         <AppProvider>
           <SubmissionProvider>
-            <MainAppContent />
+            <ValidationProvider>
+              <MainAppContent />
+            </ValidationProvider>
           </SubmissionProvider>
         </AppProvider>
       </AuthProvider>
