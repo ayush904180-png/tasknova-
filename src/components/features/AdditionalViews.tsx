@@ -18,125 +18,19 @@ import { RewardCard, WalletCard, ProfileCard, EmptyCard, InformationCard } from 
 import { TextInput, EmailInput, Textarea, Dropdown } from '../ui/Inputs';
 import { ProgressBar, Spinner } from '../ui/LoadingComponents';
 import { AppRoute } from '../../types';
+import { RewardsConsole } from '../../rewards/components/RewardsConsole';
 
 // ==========================================
 // 1. REWARDS VIEW
 // ==========================================
 export function RewardsView() {
-  const [unclaimedCoins, setUnclaimedCoins] = useState(380);
-  const [lifetimeEarned, setLifetimeEarned] = useState(1480);
-  const [isPayoutLoading, setIsPayoutLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
-  const handlePayout = () => {
-    if (unclaimedCoins < 100) {
-      alert("Minimum payout threshold is 100 coins.");
-      return;
-    }
-    setIsPayoutLoading(true);
-    setTimeout(() => {
-      setIsPayoutLoading(false);
-      setLifetimeEarned(prev => prev + unclaimedCoins);
-      setSuccessMessage(`Successfully disbursed ₹${(unclaimedCoins * 0.45).toFixed(2)} to your linked UPI ledger!`);
-      setUnclaimedCoins(0);
-    }, 2000);
-  };
-
   return (
     <motion.div 
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       className="space-y-8 text-left"
     >
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white font-display">
-          Holdings & Disbursals
-        </h1>
-        <p className="text-sm text-slate-500 mt-1.5 font-sans font-light">
-          Monitor your human feedback reward coins, simulated payout indices, and historical transactions.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2 space-y-6">
-          <RewardCard 
-            title="Consolidated Rewards"
-            totalRewards={lifetimeEarned}
-            unclaimedCoins={unclaimedCoins}
-            multiplier={1.5}
-            onClaim={handlePayout}
-          />
-
-          {isPayoutLoading && (
-            <div className="p-4 bg-indigo-50/50 dark:bg-indigo-500/5 border border-indigo-200/50 dark:border-indigo-500/20 rounded-xl flex items-center gap-3">
-              <Spinner size="sm" />
-              <span className="text-xs font-mono text-indigo-600 dark:text-indigo-400 font-medium">Contacting routing node, processing UPI instant ledger clearance...</span>
-            </div>
-          )}
-
-          {successMessage && (
-            <div className="p-4 bg-emerald-50/50 dark:bg-emerald-500/5 border border-emerald-200/50 dark:border-emerald-500/20 rounded-xl flex items-center gap-3">
-              <CheckCircle2 className="h-5 w-5 text-emerald-500" />
-              <span className="text-xs font-mono text-emerald-600 dark:text-emerald-400 font-medium">{successMessage}</span>
-            </div>
-          )}
-
-          <div className="border border-slate-200/80 dark:border-white/5 rounded-xl bg-white dark:bg-[#09090b] overflow-hidden">
-            <div className="p-4 border-b border-slate-100 dark:border-white/5 flex justify-between items-center bg-slate-50/50 dark:bg-[#030303]/40">
-              <h3 className="text-xs font-bold uppercase tracking-wider font-mono text-slate-700 dark:text-zinc-300">Transaction History</h3>
-              <Badge variant="neutral" className="text-[9px] font-mono">Consolidated Ledger</Badge>
-            </div>
-            <div className="divide-y divide-slate-100 dark:divide-white/5 text-xs">
-              {[
-                { id: 'TX-9022', task: 'RLHF Alignment Assessment #901', date: 'July 16, 2026', coins: 18, status: 'Completed' },
-                { id: 'TX-8831', task: 'Translation Audit (Hindi regional)', date: 'July 15, 2026', coins: 12, status: 'Completed' },
-                { id: 'TX-8042', task: 'Semantic Tagging Batch #4', date: 'July 13, 2026', coins: 25, status: 'Completed' },
-                { id: 'TX-PAY-01', task: 'Instant UPI Payout Hold Release', date: 'July 10, 2026', coins: -500, status: 'Transferred' },
-              ].map((tx) => (
-                <div key={tx.id} className="p-4 flex justify-between items-center hover:bg-slate-50/50 dark:hover:bg-white/1 pt-4 pb-4">
-                  <div className="space-y-1">
-                    <span className="font-semibold text-slate-800 dark:text-zinc-200 block">{tx.task}</span>
-                    <span className="text-[10px] text-slate-400 font-mono block">{tx.id} • {tx.date}</span>
-                  </div>
-                  <div className="text-right">
-                    <span className={`font-mono font-bold block ${tx.coins > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-600 dark:text-zinc-300'}`}>
-                      {tx.coins > 0 ? `+${tx.coins}` : tx.coins} Coins
-                    </span>
-                    <span className="text-[9px] font-mono text-slate-400 uppercase tracking-widest">{tx.status}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="md:col-span-1 space-y-6">
-          <WalletCard 
-            balance={unclaimedCoins}
-            inrValue={unclaimedCoins * 0.45}
-            walletAddress="TNK-7712A-X09"
-            transactionsCount={4}
-          />
-
-          <Card className="border-slate-200 dark:border-white/5">
-            <CardHeader className="py-3 border-b border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-[#030303]/40">
-              <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider block">Claim Criteria</span>
-            </CardHeader>
-            <CardContent className="p-4 space-y-4">
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs font-mono text-slate-500 dark:text-zinc-400">
-                  <span>Minimum Threshold:</span>
-                  <span>100 Coins</span>
-                </div>
-                <ProgressBar progress={Math.min(100, (unclaimedCoins / 100) * 100)} />
-              </div>
-              <p className="text-[11px] text-slate-400 leading-normal font-sans font-light">
-                Minimum payout requires a hold value of 100 reward coins. Standard translation rates evaluate 1 Coin at ₹0.45.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      <RewardsConsole />
     </motion.div>
   );
 }
