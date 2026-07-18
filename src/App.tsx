@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { AppProvider } from './context/AppContext';
 import { AuthProvider } from './auth/providers/AuthProvider';
+import { WalletProvider } from './context/WalletContext';
 import { AppRoute } from './types';
 import { LayoutShell } from './components/layout/LayoutShell';
 import { LandingPage } from './components/features/LandingPage';
@@ -204,7 +205,9 @@ export default function App() {
         <AppProvider>
           <SubmissionProvider>
             <ValidationProvider>
-              <MainAppContent />
+              <WalletProvider>
+                <MainAppContent />
+              </WalletProvider>
             </ValidationProvider>
           </SubmissionProvider>
         </AppProvider>

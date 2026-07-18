@@ -19,6 +19,7 @@ import { RewardTransactionType, RewardRule, CoinLedgerEntry } from '../../types/
 import { formatCoins, formatCurrencyValue } from '../../utils';
 import { WorkspaceExporters } from '../exporters/WorkspaceExporters';
 import { RewardTelemetry } from '../telemetry/RewardTelemetry';
+import { WalletDashboard } from './WalletDashboard';
 
 export function RewardsConsole() {
   const rewardService = useMemo(() => GlobalRewardService, []);
@@ -74,7 +75,7 @@ export function RewardsConsole() {
   const [isExporting, setIsExporting] = useState(false);
 
   // Active view tab inside rewards engine console
-  const [activeTab, setActiveTab] = useState<'simulator' | 'rules' | 'ledger' | 'xp' | 'telemetry' | 'workspace'>('simulator');
+  const [activeTab, setActiveTab] = useState<'wallet' | 'simulator' | 'rules' | 'ledger' | 'xp' | 'telemetry' | 'workspace'>('wallet');
 
   // Trigger telemetry aggregation
   const telemetryKPIs = useMemo(() => {
@@ -323,7 +324,13 @@ export function RewardsConsole() {
           </p>
         </div>
         
-        <div className="flex bg-zinc-950 p-1.5 rounded-xl border border-zinc-800">
+        <div className="flex flex-wrap gap-1 bg-zinc-950 p-1.5 rounded-xl border border-zinc-800">
+          <button
+            onClick={() => setActiveTab('wallet')}
+            className={`px-3 py-1.5 text-xs font-medium rounded-lg cursor-pointer transition-all ${activeTab === 'wallet' ? 'bg-indigo-600 text-white font-semibold' : 'text-slate-400 hover:text-white'}`}
+          >
+            Wallet & Ledger
+          </button>
           <button
             onClick={() => setActiveTab('simulator')}
             className={`px-3 py-1.5 text-xs font-medium rounded-lg cursor-pointer transition-all ${activeTab === 'simulator' ? 'bg-indigo-600 text-white font-semibold' : 'text-slate-400 hover:text-white'}`}
@@ -394,6 +401,9 @@ export function RewardsConsole() {
       </div>
 
       {/* Main tab windows */}
+      {activeTab === 'wallet' && (
+        <WalletDashboard />
+      )}
       {activeTab === 'simulator' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Left panel: Simulator inputs */}
