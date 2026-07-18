@@ -6,7 +6,7 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Compass, Target, Award, Users, BookOpen, Info, Mail, Terminal, Palette,
-  X, Lock, Cpu, Code, Settings, ShieldAlert, AlertCircle, Sparkles
+  X, Lock, Cpu, Code, Settings, ShieldAlert, AlertCircle, Sparkles, LayoutGrid
 } from 'lucide-react';
 import { AppRoute } from '../../types';
 import { useApp } from '../../context/AppContext';
@@ -34,6 +34,7 @@ export function MobileDrawer({ isOpen, onClose, activeRoute, setActiveRoute }: M
       title: 'Core Platform',
       items: [
         { route: AppRoute.HOME, label: 'Overview', icon: Compass },
+        { route: AppRoute.DASHBOARD, label: 'Dashboard Console', icon: LayoutGrid },
         { route: AppRoute.SANDBOX, label: 'Task Sandbox', icon: Target },
         { route: AppRoute.IDENTITY, label: 'Secure Portal', icon: Lock },
         { route: AppRoute.ONBOARDING, label: 'Onboarding Loop', icon: Sparkles },

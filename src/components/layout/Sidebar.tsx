@@ -33,6 +33,7 @@ export function Sidebar({ activeRoute, setActiveRoute }: SidebarProps) {
       title: 'Core Platform',
       items: [
         { route: AppRoute.HOME, label: 'Overview', icon: Compass },
+        { route: AppRoute.DASHBOARD, label: 'Dashboard Console', icon: LayoutGrid },
         { route: AppRoute.SANDBOX, label: 'Task Sandbox', icon: Target },
         { route: AppRoute.IDENTITY, label: 'Secure Portal', icon: Lock },
         { route: AppRoute.ONBOARDING, label: 'Onboarding Loop', icon: Sparkles },

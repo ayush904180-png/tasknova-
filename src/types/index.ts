@@ -8,6 +8,7 @@
  */
 export enum AppRoute {
   HOME = 'home',
+  DASHBOARD = 'dashboard',
   SANDBOX = 'sandbox',
   IDENTITY = 'identity',
   ONBOARDING = 'onboarding',

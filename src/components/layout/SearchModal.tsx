@@ -5,7 +5,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Compass, Target, Award, Users, BookOpen, Info, Mail, Terminal, Palette, X } from 'lucide-react';
+import { Search, Compass, Target, Award, Users, BookOpen, Info, Mail, Terminal, Palette, X, LayoutGrid } from 'lucide-react';
 import { AppRoute } from '../../types';
 import { useApp } from '../../context/AppContext';
 
@@ -26,6 +26,7 @@ export function SearchModal({ setActiveRoute }: { setActiveRoute: (route: AppRou
   // List of searchable sections based on permissions
   const items: SearchItem[] = [
     { route: AppRoute.HOME, title: 'Overview & Vision', category: 'Platform', desc: 'SaaS landing, metrics, and core human-in-the-loop insights.', icon: Compass },
+    { route: AppRoute.DASHBOARD, title: 'Dashboard Console', category: 'Platform', desc: 'Realtime bento grid customizable widgets, state auditing, and developer flags.', icon: LayoutGrid },
     { route: AppRoute.SANDBOX, title: 'Interactive Task Sandbox', category: 'Platform', desc: 'Complete micro human evaluation tasks and earn rewards.', icon: Target },
     { route: AppRoute.REWARDS, title: 'Holdings & Disbursals', category: 'Platform', desc: 'Monitor coins balance, UPI routing logs, and claim payments.', icon: Award },
     { route: AppRoute.LEADERBOARD, title: 'Global Contributor Standings', category: 'Community', desc: 'Ranks of elite validators and weekly rewards index.', icon: Users },

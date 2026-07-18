@@ -15,6 +15,7 @@ import { ArchitectureHub } from './components/features/ArchitectureHub';
 import { DesignSystemExplorer } from './components/features/DesignSystemExplorer';
 import { AuthGateway } from './auth/components/AuthGateway';
 import { OnboardingShell } from './onboarding/components/OnboardingShell';
+import { DashboardShell } from './dashboard/components/DashboardShell';
 import { 
   RewardsView, LeaderboardView, CommunityView, BlogView, AboutView, ContactView, ErrorViews 
 } from './components/features/AdditionalViews';
@@ -30,6 +31,7 @@ function MainAppContent() {
   useEffect(() => {
     const titles: Record<AppRoute, string> = {
       [AppRoute.HOME]: 'TaskNova AI - Professional Human Intelligence Platform',
+      [AppRoute.DASHBOARD]: 'Control Console - Decoupled Bento Widgets | TaskNova AI',
       [AppRoute.SANDBOX]: 'Micro-Task Sandbox - Train LLMs | TaskNova AI',
       [AppRoute.REWARDS]: 'Rewards & Holdings Ledger | TaskNova AI',
       [AppRoute.LEADERBOARD]: 'Global Validator Leaderboard | TaskNova AI',
@@ -80,6 +82,12 @@ function MainAppContent() {
         {activeRoute === AppRoute.HOME && (
           <div className="space-y-16 animate-fade-in">
             <LandingPage setActiveRoute={setActiveRoute} />
+          </div>
+        )}
+
+        {activeRoute === AppRoute.DASHBOARD && (
+          <div className="space-y-8 animate-fade-in">
+            <DashboardShell />
           </div>
         )}
 
