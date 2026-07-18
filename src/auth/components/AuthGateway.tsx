@@ -16,6 +16,7 @@ import SuccessScreen from './SuccessScreen';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Shield, Sparkles, CheckSquare, Key, HelpCircle, FileText, Info } from 'lucide-react';
+import { ProfileShell } from '../../profile/components/ProfileShell';
 
 export const AuthGateway: React.FC = () => {
   const { 
@@ -41,6 +42,29 @@ export const AuthGateway: React.FC = () => {
   };
 
   const isEmailVerified = user?.emailVerified || localEmailVerified;
+
+  if (isAuthenticated && user && isEmailVerified) {
+    return (
+      <div className="space-y-8 max-w-5xl mx-auto px-4 md:px-0 text-left animate-fade-in">
+        {/* Profile dashboard header with logout */}
+        <div className="p-4 rounded-2xl border border-indigo-500/15 bg-indigo-500/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-slate-300 font-medium">Verified Active Session:</span>
+            <span className="font-mono text-white font-bold">{user.email}</span>
+            <span className="text-slate-400 font-mono">({user.role.toUpperCase()})</span>
+          </div>
+          <button
+            onClick={signOut}
+            className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-colors shadow-sm cursor-pointer"
+          >
+            Disconnect Session
+          </button>
+        </div>
+        <ProfileShell />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto px-4 md:px-0 text-left">
