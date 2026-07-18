@@ -1,0 +1,304 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 1. GLOBAL SAFETY NET: Default deny-all catch-all rule
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // ==========================================
+    // 2. REUSABLE PRIMITIVES & CONSTRAINTS
+    // ==========================================
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Checks if the user profile contains the 'admin' role in the database.
+    function isAdmin() {
+      return isSignedIn() && 
+        exists(/databases/$(database)/documents/profiles/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/profiles/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // ==========================================
+    // 3. SCHEMA VALIDATION BLUEPRINTS (The "Anti-Update-Gaps")
+    // ==========================================
+
+    function isValidUser(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.email is string && data.email.size() <= 256 &&
+             data.emailVerified is bool &&
+             data.status in ['active', 'suspended', 'pending'];
+    }
+
+    function isValidProfile(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.username is string && data.username.size() >= 3 && data.username.size() <= 30 &&
+             data.role in ['contributor', 'creator', 'business', 'admin'] &&
+             data.displayName is string && data.displayName.size() <= 100 &&
+             data.country is string && data.country.size() <= 50 &&
+             data.level is int && data.level >= 1 &&
+             data.xp is int && data.xp >= 0 &&
+             data.totalCoinsEarned is int && data.totalCoinsEarned >= 0;
+    }
+
+    function isValidTask(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.title is string && data.title.size() <= 150 &&
+             data.description is string && data.description.size() <= 2000 &&
+             data.categoryId is string &&
+             data.creatorId is string && data.creatorId.size() <= 128 &&
+             data.difficulty in ['easy', 'medium', 'hard'] &&
+             data.rewardCoins is int && data.rewardCoins >= 0 &&
+             data.estimatedSeconds is int && data.estimatedSeconds >= 0 &&
+             data.maxSubmissionsAllowed is int && data.maxSubmissionsAllowed >= 1 &&
+             data.submissionCount is int && data.submissionCount >= 0 &&
+             data.status in ['draft', 'active', 'paused', 'completed', 'cancelled'];
+    }
+
+    function isValidSubmission(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.taskId is string && data.taskId.size() <= 128 &&
+             data.userId is string && data.userId.size() <= 128 &&
+             data.durationSeconds is int && data.durationSeconds >= 0 &&
+             data.status in ['pending_review', 'approved', 'rejected'];
+    }
+
+    function isValidWallet(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.ownerId is string && data.ownerId.size() <= 128 &&
+             data.balanceCoins is int && data.balanceCoins >= 0 &&
+             data.pendingCoins is int && data.pendingCoins >= 0 &&
+             data.currency in ['COIN', 'USD'] &&
+             data.status in ['active', 'frozen'];
+    }
+
+    function isValidTransaction(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.walletId is string && data.walletId.size() <= 128 &&
+             data.amount is int && data.amount >= 0 &&
+             data.type in ['credit', 'debit'] &&
+             data.purpose in ['reward', 'payout', 'deposit', 'purchase', 'refund'] &&
+             data.status in ['pending', 'completed', 'failed'];
+    }
+
+    function isValidCampaign(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.businessId is string && data.businessId.size() <= 128 &&
+             data.title is string && data.title.size() <= 150 &&
+             data.description is string && data.description.size() <= 1000 &&
+             data.budgetCoins is int && data.budgetCoins >= 0 &&
+             data.spentCoins is int && data.spentCoins >= 0 &&
+             data.status in ['draft', 'pending_approval', 'active', 'completed', 'paused'];
+    }
+
+    // ==========================================
+    // 4. COLLECTION MATCH BLOCKS
+    // ==========================================
+
+    // Users Collection
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      
+      allow create: if isOwner(userId) && isValidUser(incoming()) &&
+                       incoming().keys().hasAll(['id', 'email', 'emailVerified', 'createdAt', 'updatedAt', 'lastActiveAt', 'status']) &&
+                       incoming().keys().size() == 7 &&
+                       incoming().status == 'pending' &&
+                       incoming().emailVerified == request.auth.token.email_verified;
+
+      allow update: if (isOwner(userId) || isAdmin()) && isValidUser(incoming()) &&
+                       incoming().id == existing().id &&
+                       incoming().email == existing().email &&
+                       incoming().createdAt == existing().createdAt &&
+                       (incoming().diff(existing()).affectedKeys().hasOnly(['lastActiveAt', 'updatedAt']) || isAdmin());
+      
+      allow delete: if isAdmin();
+    }
+
+    // Profiles Collection (Contains sensitive gamified stats and roles)
+    match /profiles/{userId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn();
+      
+      allow create: if isOwner(userId) && isVerified() && isValidProfile(incoming()) &&
+                       incoming().keys().hasAll(['id', 'username', 'role', 'displayName', 'country', 'skills', 'level', 'xp', 'totalCoinsEarned', 'createdAt', 'updatedAt']) &&
+                       incoming().role == 'contributor' && // Standard users can't self-promote to Creator or Admin
+                       incoming().level == 1 &&
+                       incoming().xp == 0 &&
+                       incoming().totalCoinsEarned == 0;
+
+      allow update: if isVerified() && isValidProfile(incoming()) &&
+                       incoming().id == existing().id &&
+                       incoming().createdAt == existing().createdAt &&
+                       (
+                         // Action: Profile customization
+                         (isOwner(userId) && incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'avatarUrl', 'bio', 'country', 'skills', 'updatedAt']) && incoming().role == existing().role) ||
+                         // Action: XP reward and progression increment (system automatic, locked fields)
+                         (isAdmin() || incoming().diff(existing()).affectedKeys().hasOnly(['xp', 'level', 'totalCoinsEarned', 'updatedAt']))
+                       );
+      
+      allow delete: if isAdmin();
+    }
+
+    // Tasks Collection
+    match /tasks/{taskId} {
+      allow get: if isSignedIn() && isValidId(taskId);
+      allow list: if isSignedIn();
+      
+      allow create: if isVerified() && isValidTask(incoming()) &&
+                       isValidId(taskId) &&
+                       incoming().creatorId == request.auth.uid &&
+                       incoming().submissionCount == 0 &&
+                       (incoming().status == 'draft' || incoming().status == 'active');
+
+      allow update: if isVerified() && isValidTask(incoming()) &&
+                       isValidId(taskId) &&
+                       incoming().id == existing().id &&
+                       incoming().creatorId == existing().creatorId &&
+                       incoming().createdAt == existing().createdAt &&
+                       (
+                         // Action: Task modification by owner
+                         (incoming().creatorId == request.auth.uid && incoming().diff(existing()).affectedKeys().hasOnly(['title', 'description', 'instructions', 'status', 'updatedAt'])) ||
+                         // Action: Submission count increment on work submission
+                         (incoming().diff(existing()).affectedKeys().hasOnly(['submissionCount', 'updatedAt'])) ||
+                         isAdmin()
+                       );
+      
+      allow delete: if isAdmin() || (isOwner(existing().creatorId) && existing().status == 'draft');
+    }
+
+    // Task Submissions Collection (Contributor alignments evaluations)
+    match /taskSubmissions/{submissionId} {
+      allow get: if isSignedIn() && isValidId(submissionId) && (isOwner(existing().userId) || isOwner(get(/databases/$(database)/documents/tasks/$(existing().taskId)).data.creatorId) || isAdmin());
+      
+      allow list: if isSignedIn() && (
+        resource.data.userId == request.auth.uid || 
+        get(/databases/$(database)/documents/tasks/$(resource.data.taskId)).data.creatorId == request.auth.uid || 
+        isAdmin()
+      );
+
+      allow create: if isVerified() && isValidSubmission(incoming()) &&
+                       isValidId(submissionId) &&
+                       incoming().userId == request.auth.uid &&
+                       incoming().status == 'pending_review' &&
+                       exists(/databases/$(database)/documents/tasks/$(incoming().taskId)); // Prevent orphaned submissions
+
+      allow update: if isVerified() && isValidSubmission(incoming()) &&
+                       isValidId(submissionId) &&
+                       incoming().id == existing().id &&
+                       incoming().taskId == existing().taskId &&
+                       incoming().userId == existing().userId &&
+                       incoming().createdAt == existing().createdAt &&
+                       existing().status == 'pending_review' && // Terminal State Locking: approved/rejected submissions are frozen!
+                       (
+                         // Action: Admin or Task Creator evaluates submission
+                         (isOwner(get(/databases/$(database)/documents/tasks/$(existing().taskId)).data.creatorId) || isAdmin()) &&
+                         incoming().diff(existing()).affectedKeys().hasOnly(['status', 'reviewerFeedback', 'reviewedBy', 'reviewedAt', 'updatedAt'])
+                       );
+      
+      allow delete: if isAdmin();
+    }
+
+    // Wallets Collection
+    match /wallets/{walletId} {
+      allow get: if isOwner(existing().ownerId) || isAdmin();
+      allow list: if isAdmin();
+      
+      allow create: if isVerified() && isValidWallet(incoming()) &&
+                       isOwner(incoming().ownerId) &&
+                       incoming().balanceCoins == 0 &&
+                       incoming().pendingCoins == 0 &&
+                       incoming().currency == 'COIN' &&
+                       incoming().status == 'active';
+
+      allow update: if isVerified() && isValidWallet(incoming()) &&
+                       incoming().id == existing().id &&
+                       incoming().ownerId == existing().ownerId &&
+                       incoming().currency == existing().currency &&
+                       (
+                         // Only admins or system microtransaction ledger routines can adjust account balance/status
+                         isAdmin()
+                       );
+      
+      allow delete: if false; // Wallets are indestructible for accounting integrity
+    }
+
+    // Transactions Collection
+    match /transactions/{transactionId} {
+      allow get: if isSignedIn() && isValidId(transactionId) && (isOwner(get(/databases/$(database)/documents/wallets/$(existing().walletId)).data.ownerId) || isAdmin());
+      
+      allow list: if isSignedIn() && (
+        isOwner(get(/databases/$(database)/documents/wallets/$(resource.data.walletId)).data.ownerId) || 
+        isAdmin()
+      );
+
+      // Transactions are strictly append-only, immutable once compiled
+      allow create: if isVerified() && isValidTransaction(incoming()) &&
+                       isValidId(transactionId) &&
+                       isAdmin(); // Only admin service triggers can write transactional records
+
+      allow update: if false; // NO updates permitted on immutable transaction logs
+      allow delete: if false; // NO deletes permitted
+    }
+
+    // Campaigns Collection
+    match /campaigns/{campaignId} {
+      allow get: if isSignedIn() && isValidId(campaignId);
+      allow list: if isSignedIn();
+      
+      allow create: if isVerified() && isValidCampaign(incoming()) &&
+                       isValidId(campaignId) &&
+                       (incoming().status == 'draft' || incoming().status == 'pending_approval') &&
+                       exists(/databases/$(database)/documents/profiles/$(request.auth.uid)) &&
+                       get(/databases/$(database)/documents/profiles/$(request.auth.uid)).data.role in ['business', 'admin'];
+
+      allow update: if isVerified() && isValidCampaign(incoming()) &&
+                       isValidId(campaignId) &&
+                       incoming().id == existing().id &&
+                       incoming().businessId == existing().businessId &&
+                       incoming().createdAt == existing().createdAt &&
+                       (
+                         // Action: Business campaign manager settings adjustment
+                         (isOwner(existing().businessId) && incoming().diff(existing()).affectedKeys().hasOnly(['title', 'description', 'targetCriteria', 'updatedAt'])) ||
+                         // Action: Admin changes campaign state
+                         (isAdmin() && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'budgetCoins', 'spentCoins', 'taskIds', 'updatedAt']))
+                       );
+      
+      allow delete: if isAdmin() || (isOwner(existing().businessId) && existing().status == 'draft');
+    }
+
+    // Audit Logs Collection
+    match /auditLogs/{logId} {
+      allow get: if isAdmin() && isValidId(logId);
+      allow list: if isAdmin();
+      
+      // Strict system append-only logs
+      allow create: if isVerified() && isAdmin();
+      allow update: if false;
+      allow delete: if false;
+    }
+  }
+}

@@ -1,0 +1,185 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Core authenticated user details.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "email": { "type": "string", "format": "email" },
+        "emailVerified": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "lastActiveAt": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["active", "suspended", "pending"] }
+      },
+      "required": ["id", "email", "emailVerified", "createdAt", "updatedAt", "lastActiveAt", "status"]
+    },
+    "Profile": {
+      "title": "Profile",
+      "description": "User profile with gamified attributes and permissions role.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "username": { "type": "string", "minLength": 3, "maxLength": 30 },
+        "role": { "type": "string", "enum": ["contributor", "creator", "business", "admin"] },
+        "displayName": { "type": "string", "maxLength": 100 },
+        "avatarUrl": { "type": "string" },
+        "bio": { "type": "string", "maxLength": 500 },
+        "country": { "type": "string", "maxLength": 50 },
+        "skills": { "type": "array" },
+        "level": { "type": "integer" },
+        "xp": { "type": "integer" },
+        "totalCoinsEarned": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "username", "role", "displayName", "country", "skills", "level", "xp", "totalCoinsEarned", "createdAt", "updatedAt"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "RLHF high-precision alignment task payload definition.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "title": { "type": "string", "maxLength": 150 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "categoryId": { "type": "string" },
+        "campaignId": { "type": "string" },
+        "creatorId": { "type": "string" },
+        "difficulty": { "type": "string", "enum": ["easy", "medium", "hard"] },
+        "rewardCoins": { "type": "integer" },
+        "estimatedSeconds": { "type": "integer" },
+        "instructions": { "type": "array" },
+        "payloadTemplate": { "type": "object" },
+        "maxSubmissionsAllowed": { "type": "integer" },
+        "submissionCount": { "type": "integer" },
+        "status": { "type": "string", "enum": ["draft", "active", "paused", "completed", "cancelled"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "title", "description", "categoryId", "creatorId", "difficulty", "rewardCoins", "estimatedSeconds", "instructions", "payloadTemplate", "maxSubmissionsAllowed", "submissionCount", "status", "createdAt", "updatedAt"]
+    },
+    "TaskSubmission": {
+      "title": "TaskSubmission",
+      "description": "Contributor-provided RLHF alignment evaluation answers.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "taskId": { "type": "string" },
+        "userId": { "type": "string" },
+        "campaignId": { "type": "string" },
+        "responsePayload": { "type": "object" },
+        "durationSeconds": { "type": "integer" },
+        "status": { "type": "string", "enum": ["pending_review", "approved", "rejected"] },
+        "reviewerFeedback": { "type": "string", "maxLength": 1000 },
+        "reviewedBy": { "type": "string" },
+        "reviewedAt": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "taskId", "userId", "responsePayload", "durationSeconds", "status", "createdAt", "updatedAt"]
+    },
+    "Wallet": {
+      "title": "Wallet",
+      "description": "User microtransaction ledger record.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "ownerId": { "type": "string" },
+        "balanceCoins": { "type": "integer" },
+        "pendingCoins": { "type": "integer" },
+        "currency": { "type": "string", "enum": ["COIN", "USD"] },
+        "status": { "type": "string", "enum": ["active", "frozen"] },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "ownerId", "balanceCoins", "pendingCoins", "currency", "status", "updatedAt"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Immutable ledger record of payouts and rewards.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "walletId": { "type": "string" },
+        "amount": { "type": "integer" },
+        "type": { "type": "string", "enum": ["credit", "debit"] },
+        "purpose": { "type": "string", "enum": ["reward", "payout", "deposit", "purchase", "refund"] },
+        "referenceId": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "completed", "failed"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "walletId", "amount", "type", "purpose", "status", "createdAt"]
+    },
+    "Campaign": {
+      "title": "Campaign",
+      "description": "Business or creator funding campaign to request RLHF inputs.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "businessId": { "type": "string" },
+        "title": { "type": "string", "maxLength": 150 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "budgetCoins": { "type": "integer" },
+        "spentCoins": { "type": "integer" },
+        "status": { "type": "string", "enum": ["draft", "pending_approval", "active", "completed", "paused"] },
+        "targetCriteria": { "type": "object" },
+        "taskIds": { "type": "array" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "businessId", "title", "description", "budgetCoins", "spentCoins", "status", "targetCriteria", "taskIds", "createdAt", "updatedAt"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Immutable logs of operations for compliance audits.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "actorId": { "type": "string" },
+        "action": { "type": "string" },
+        "resourceType": { "type": "string" },
+        "resourceId": { "type": "string" },
+        "preImage": { "type": "object" },
+        "postImage": { "type": "object" },
+        "ipAddress": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "actorId", "action", "resourceType", "resourceId", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Authenticated user records mapped to auth UID."
+    },
+    "/profiles/{userId}": {
+      "schema": "Profile",
+      "description": "User profile with display stats, level, and permissions."
+    },
+    "/tasks/{taskId}": {
+      "schema": "Task",
+      "description": "RLHF tasks available for contributors to perform."
+    },
+    "/taskSubmissions/{submissionId}": {
+      "schema": "TaskSubmission",
+      "description": "Evaluation task submissions enqueued for QA review."
+    },
+    "/wallets/{walletId}": {
+      "schema": "Wallet",
+      "description": "Balances and currency indicators."
+    },
+    "/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "Consolidated financial log records."
+    },
+    "/campaigns/{campaignId}": {
+      "schema": "Campaign",
+      "description": "Business campaign and budget tracking."
+    },
+    "/auditLogs/{logId}": {
+      "schema": "AuditLog",
+      "description": "Immutable platform operational logs."
+    }
+  }
+}
