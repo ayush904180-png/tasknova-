@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import { 
   Compass, Target, Award, Users, BookOpen, Info, Mail, Terminal, Palette,
-  ChevronLeft, ChevronRight, Lock, LayoutGrid, ShieldAlert, Cpu, Settings, Code, AlertCircle, Sparkles
+  ChevronLeft, ChevronRight, Lock, LayoutGrid, ShieldAlert, Cpu, Settings, Code, AlertCircle, Sparkles, Layers
 } from 'lucide-react';
 import { AppRoute } from '../../types';
 import { useApp } from '../../context/AppContext';
@@ -35,6 +35,7 @@ export function Sidebar({ activeRoute, setActiveRoute }: SidebarProps) {
         { route: AppRoute.HOME, label: 'Overview', icon: Compass },
         { route: AppRoute.DASHBOARD, label: 'Dashboard Console', icon: LayoutGrid },
         { route: AppRoute.SANDBOX, label: 'Task Sandbox', icon: Target },
+        { route: AppRoute.SUBMISSIONS, label: 'Submission Ledger', icon: Layers },
         { route: AppRoute.IDENTITY, label: 'Secure Portal', icon: Lock },
         { route: AppRoute.ONBOARDING, label: 'Onboarding Loop', icon: Sparkles },
         { route: AppRoute.REWARDS, label: 'Rewards Index', icon: Award },

@@ -19,6 +19,8 @@ import { DashboardShell } from './dashboard/components/DashboardShell';
 import { 
   RewardsView, LeaderboardView, CommunityView, BlogView, AboutView, ContactView, ErrorViews 
 } from './components/features/AdditionalViews';
+import { SubmissionProvider } from './submissions/context/SubmissionContext';
+import { SubmissionShell } from './submissions/components/SubmissionShell';
 
 /**
  * Main TaskNova AI core entry shell.
@@ -33,6 +35,7 @@ function MainAppContent() {
       [AppRoute.HOME]: 'TaskNova AI - Professional Human Intelligence Platform',
       [AppRoute.DASHBOARD]: 'Control Console - Decoupled Bento Widgets | TaskNova AI',
       [AppRoute.SANDBOX]: 'Micro-Task Sandbox - Train LLMs | TaskNova AI',
+      [AppRoute.SUBMISSIONS]: 'Submission Ledger Console | TaskNova AI',
       [AppRoute.REWARDS]: 'Rewards & Holdings Ledger | TaskNova AI',
       [AppRoute.LEADERBOARD]: 'Global Validator Leaderboard | TaskNova AI',
       [AppRoute.COMMUNITY]: 'Community Roundtable | TaskNova AI',
@@ -103,6 +106,12 @@ function MainAppContent() {
             </div>
             
             <SandboxTasks />
+          </div>
+        )}
+
+        {activeRoute === AppRoute.SUBMISSIONS && (
+          <div className="space-y-8 animate-fade-in">
+            <SubmissionShell />
           </div>
         )}
 
@@ -192,7 +201,9 @@ export default function App() {
     <ThemeProvider>
       <AuthProvider>
         <AppProvider>
-          <MainAppContent />
+          <SubmissionProvider>
+            <MainAppContent />
+          </SubmissionProvider>
         </AppProvider>
       </AuthProvider>
     </ThemeProvider>

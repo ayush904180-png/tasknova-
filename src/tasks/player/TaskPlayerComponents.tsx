@@ -20,6 +20,7 @@ import { GlobalTrustEngine } from './TrustEngine';
 import { GlobalTelemetryTracker } from './TelemetryTracker';
 import { PlayerEventBus } from './PlayerEventBus';
 import { formatCoins, formatCurrencyValue } from '../../utils';
+import { GlobalSubmissionService } from '../../submissions/services/SubmissionService';
 
 // ==========================================
 // 1. DOCK & OVERLAY LAYOUT MODALS (DIALOGS)
@@ -535,6 +536,10 @@ export function TaskPlayerShell() {
     // 2. Submit values via TaskProvider hook (which interacts with global state + offline sync adapters)
     const success = await submitTask(answers, secondsElapsed);
     if (success) {
+      // Compile and write the enterprise submission record
+      const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown';
+      await GlobalSubmissionService.packageAndSave(session, activeTask, userAgent, !isOnline);
+
       await GlobalPlayerSessionService.submitSession(session.sessionId, activeTask.rewardCoins);
       GlobalTaskLockManager.releaseLock(activeTask.id, lockToken);
       GlobalTelemetryTracker.trackEvent('complete', session);

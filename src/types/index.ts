@@ -10,6 +10,7 @@ export enum AppRoute {
   HOME = 'home',
   DASHBOARD = 'dashboard',
   SANDBOX = 'sandbox',
+  SUBMISSIONS = 'submissions',
   IDENTITY = 'identity',
   ONBOARDING = 'onboarding',
   BLUEPRINT = 'blueprint',
