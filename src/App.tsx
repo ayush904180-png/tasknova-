@@ -25,6 +25,13 @@ import { SubmissionShell } from './submissions/components/SubmissionShell';
 import { ValidationProvider } from './validation/context/ValidationContext';
 import { InfrastructureProvider } from './infrastructure/providers/InfrastructureProvider';
 import { TaskGenerationPage } from './task-generation/pages/TaskGenerationPage';
+import { MarketplaceProvider } from './marketplace/context/MarketplaceContext';
+import { MarketplacePage } from './marketplace/pages/MarketplacePage';
+import { BillingProvider } from './billing/context/BillingContext';
+import { BillingConsolePage } from './billing/pages/BillingConsolePage';
+import { AdminConsolePage } from './admin/pages/AdminConsolePage';
+import { AnalyticsConsolePage } from './analytics/pages/AnalyticsConsolePage';
+import { NotificationConsolePage } from './notifications/pages/NotificationConsolePage';
 
 /**
  * Main TaskNova AI core entry shell.
@@ -50,6 +57,11 @@ function MainAppContent() {
       [AppRoute.IDENTITY]: 'Identity Secure Gate | TaskNova AI',
       [AppRoute.ONBOARDING]: 'User Onboarding Calibration | TaskNova AI',
       [AppRoute.TASK_GENERATOR]: 'Enterprise Task Generation Engine | TaskNova AI',
+      [AppRoute.MARKETPLACE]: 'Contributor Task Discovery Marketplace | TaskNova AI',
+      [AppRoute.BILLING]: 'Billing Operations Console | TaskNova AI',
+      [AppRoute.ADMIN]: 'Platform Operational OS - Admin Control Center | TaskNova AI',
+      [AppRoute.ANALYTICS]: 'BI & Executive KPI Command Center | TaskNova AI',
+      [AppRoute.NOTIFICATIONS]: 'Enterprise Dispatch & Engagement OS | TaskNova AI',
       [AppRoute.DESIGN_SYSTEM]: 'TaskNova Global Design System | TaskNova AI',
       [AppRoute.BUSINESS_PORTAL]: 'Enterprise Campaign Workspace | TaskNova AI',
       [AppRoute.ERROR_404]: '404 - Not Found | TaskNova AI',
@@ -124,6 +136,36 @@ function MainAppContent() {
         {activeRoute === AppRoute.TASK_GENERATOR && (
           <div className="space-y-8 animate-fade-in">
             <TaskGenerationPage />
+          </div>
+        )}
+
+        {activeRoute === AppRoute.MARKETPLACE && (
+          <div className="space-y-8 animate-fade-in">
+            <MarketplacePage />
+          </div>
+        )}
+
+        {activeRoute === AppRoute.BILLING && (
+          <div className="space-y-8 animate-fade-in">
+            <BillingConsolePage />
+          </div>
+        )}
+
+        {activeRoute === AppRoute.ADMIN && (
+          <div className="space-y-8 animate-fade-in">
+            <AdminConsolePage />
+          </div>
+        )}
+
+        {activeRoute === AppRoute.ANALYTICS && (
+          <div className="space-y-8 animate-fade-in">
+            <AnalyticsConsolePage />
+          </div>
+        )}
+
+        {activeRoute === AppRoute.NOTIFICATIONS && (
+          <div className="space-y-8 animate-fade-in">
+            <NotificationConsolePage />
           </div>
         )}
 
@@ -217,7 +259,11 @@ export default function App() {
             <SubmissionProvider>
               <ValidationProvider>
                 <WalletProvider>
-                  <MainAppContent />
+                  <MarketplaceProvider>
+                    <BillingProvider>
+                      <MainAppContent />
+                    </BillingProvider>
+                  </MarketplaceProvider>
                 </WalletProvider>
               </ValidationProvider>
             </SubmissionProvider>

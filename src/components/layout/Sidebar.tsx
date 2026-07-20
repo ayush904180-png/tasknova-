@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import { 
   Compass, Target, Award, Users, BookOpen, Info, Mail, Terminal, Palette,
-  ChevronLeft, ChevronRight, Lock, LayoutGrid, ShieldAlert, Cpu, Settings, Code, AlertCircle, Sparkles, Layers
+  ChevronLeft, ChevronRight, Lock, LayoutGrid, ShieldAlert, Cpu, Settings, Code, AlertCircle, Sparkles, Layers, ShoppingBag, CreditCard, BarChart3
 } from 'lucide-react';
 import { AppRoute } from '../../types';
 import { useApp } from '../../context/AppContext';
@@ -37,6 +37,11 @@ export function Sidebar({ activeRoute, setActiveRoute }: SidebarProps) {
         { route: AppRoute.SANDBOX, label: 'Task Sandbox', icon: Target },
         { route: AppRoute.SUBMISSIONS, label: 'Submission Ledger', icon: Layers },
         { route: AppRoute.TASK_GENERATOR, label: 'Task Gen Engine', icon: Sparkles },
+        { route: AppRoute.MARKETPLACE, label: 'Task Marketplace', icon: ShoppingBag },
+        { route: AppRoute.BILLING, label: 'Billing Console', icon: CreditCard },
+        { route: AppRoute.ADMIN, label: 'Admin Terminal', icon: Settings },
+        { route: AppRoute.ANALYTICS, label: 'Ecosystem Analytics', icon: BarChart3 },
+        { route: AppRoute.NOTIFICATIONS, label: 'Engagement Platform', icon: Mail },
         { route: AppRoute.IDENTITY, label: 'Secure Portal', icon: Lock },
         { route: AppRoute.ONBOARDING, label: 'Onboarding Loop', icon: Sparkles },
         { route: AppRoute.REWARDS, label: 'Rewards Index', icon: Award },
@@ -56,7 +61,6 @@ export function Sidebar({ activeRoute, setActiveRoute }: SidebarProps) {
 
   // Locked portals for SaaS design
   const lockedPortals = [
-    { label: 'Admin Terminal', icon: Settings },
     { label: 'Business Portal', icon: LayoutGrid },
     { label: 'Creator Panel', icon: Code },
   ];
