@@ -23,6 +23,7 @@ import {
 import { SubmissionProvider } from './submissions/context/SubmissionContext';
 import { SubmissionShell } from './submissions/components/SubmissionShell';
 import { ValidationProvider } from './validation/context/ValidationContext';
+import { InfrastructureProvider } from './infrastructure/providers/InfrastructureProvider';
 
 /**
  * Main TaskNova AI core entry shell.
@@ -202,17 +203,19 @@ function MainAppContent() {
 export default function App() {
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <AppProvider>
-          <SubmissionProvider>
-            <ValidationProvider>
-              <WalletProvider>
-                <MainAppContent />
-              </WalletProvider>
-            </ValidationProvider>
-          </SubmissionProvider>
-        </AppProvider>
-      </AuthProvider>
+      <InfrastructureProvider>
+        <AuthProvider>
+          <AppProvider>
+            <SubmissionProvider>
+              <ValidationProvider>
+                <WalletProvider>
+                  <MainAppContent />
+                </WalletProvider>
+              </ValidationProvider>
+            </SubmissionProvider>
+          </AppProvider>
+        </AuthProvider>
+      </InfrastructureProvider>
     </ThemeProvider>
   );
 }
