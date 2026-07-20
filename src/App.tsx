@@ -48,6 +48,7 @@ function MainAppContent() {
       [AppRoute.IDENTITY]: 'Identity Secure Gate | TaskNova AI',
       [AppRoute.ONBOARDING]: 'User Onboarding Calibration | TaskNova AI',
       [AppRoute.DESIGN_SYSTEM]: 'TaskNova Global Design System | TaskNova AI',
+      [AppRoute.BUSINESS_PORTAL]: 'Enterprise Campaign Workspace | TaskNova AI',
       [AppRoute.ERROR_404]: '404 - Not Found | TaskNova AI',
       [AppRoute.ERROR_500]: '500 - Server Panic | TaskNova AI',
       [AppRoute.OFFLINE]: 'Offline Mode | TaskNova AI',

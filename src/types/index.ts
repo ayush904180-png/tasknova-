@@ -21,6 +21,7 @@ export enum AppRoute {
   BLOG = 'blog',
   ABOUT = 'about',
   CONTACT = 'contact',
+  BUSINESS_PORTAL = 'business-portal',
   ERROR_404 = 'error-404',
   ERROR_500 = 'error-500',
   OFFLINE = 'offline',
