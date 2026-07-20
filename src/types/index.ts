@@ -22,6 +22,7 @@ export enum AppRoute {
   ABOUT = 'about',
   CONTACT = 'contact',
   BUSINESS_PORTAL = 'business-portal',
+  TASK_GENERATOR = 'task-generator',
   ERROR_404 = 'error-404',
   ERROR_500 = 'error-500',
   OFFLINE = 'offline',

@@ -8,10 +8,12 @@ import { motion } from 'motion/react';
 import { 
   Upload, Database, FileSpreadsheet, Eye, Trash2, CheckCircle, 
   AlertTriangle, FileArchive, Search, Plus, Filter, RefreshCw,
-  ChevronLeft, ChevronRight, Check
+  ChevronLeft, ChevronRight, Check, Sparkles
 } from 'lucide-react';
 import { useBusiness } from '../context/BusinessContext';
 import { Dataset } from '../types';
+import { DatasetProvider } from '../../datasets/context/DatasetContext';
+import { EnterpriseDatasetIntelligencePlatform } from '../../datasets/pages/EnterpriseDatasetIntelligencePlatform';
 
 export const DatasetManager: React.FC = () => {
   const { datasets, uploadDataset } = useBusiness();
@@ -19,6 +21,7 @@ export const DatasetManager: React.FC = () => {
   const [selectedTypeFilter, setSelectedTypeFilter] = useState<string>('all');
   const [previewDatasetId, setPreviewDatasetId] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [showEnterprisePlatform, setShowEnterprisePlatform] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Manual select simulation files
@@ -75,8 +78,43 @@ export const DatasetManager: React.FC = () => {
 
   const previewTarget = datasets.find((d) => d.id === previewDatasetId);
 
+  if (showEnterprisePlatform) {
+    return (
+      <DatasetProvider>
+        <div className="space-y-4">
+          <div className="flex justify-end">
+            <button
+              onClick={() => setShowEnterprisePlatform(false)}
+              className="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-800 dark:text-zinc-300 rounded-xl text-[10px] font-mono font-bold cursor-pointer flex items-center gap-1.5 border border-slate-200 dark:border-white/5 shadow-sm transition-all"
+            >
+              <Database className="h-3.5 w-3.5 text-indigo-400" /> Switch to Standard List View
+            </button>
+          </div>
+          <EnterpriseDatasetIntelligencePlatform />
+        </div>
+      </DatasetProvider>
+    );
+  }
+
   return (
     <div className="space-y-6">
+      
+      {/* Promotion top bar */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-indigo-500/10 border border-indigo-500/20 rounded-2xl p-4 gap-4">
+        <div className="space-y-0.5">
+          <span className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+            <Sparkles className="h-4 w-4 text-indigo-400 animate-pulse" />
+            Launch Enterprise Dataset Intelligence Platform
+          </span>
+          <p className="text-[10px] text-slate-400">Continuous automated validation, automated data cleaning, schema detection and publishing baselines.</p>
+        </div>
+        <button
+          onClick={() => setShowEnterprisePlatform(true)}
+          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-mono font-bold cursor-pointer transition-colors"
+        >
+          Activate Enterprise Platform
+        </button>
+      </div>
       
       {/* Top action grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">

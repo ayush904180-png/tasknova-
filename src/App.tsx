@@ -24,6 +24,7 @@ import { SubmissionProvider } from './submissions/context/SubmissionContext';
 import { SubmissionShell } from './submissions/components/SubmissionShell';
 import { ValidationProvider } from './validation/context/ValidationContext';
 import { InfrastructureProvider } from './infrastructure/providers/InfrastructureProvider';
+import { TaskGenerationPage } from './task-generation/pages/TaskGenerationPage';
 
 /**
  * Main TaskNova AI core entry shell.
@@ -48,6 +49,7 @@ function MainAppContent() {
       [AppRoute.BLUEPRINT]: 'Architecture Hub Specifications | TaskNova AI',
       [AppRoute.IDENTITY]: 'Identity Secure Gate | TaskNova AI',
       [AppRoute.ONBOARDING]: 'User Onboarding Calibration | TaskNova AI',
+      [AppRoute.TASK_GENERATOR]: 'Enterprise Task Generation Engine | TaskNova AI',
       [AppRoute.DESIGN_SYSTEM]: 'TaskNova Global Design System | TaskNova AI',
       [AppRoute.BUSINESS_PORTAL]: 'Enterprise Campaign Workspace | TaskNova AI',
       [AppRoute.ERROR_404]: '404 - Not Found | TaskNova AI',
@@ -116,6 +118,12 @@ function MainAppContent() {
         {activeRoute === AppRoute.SUBMISSIONS && (
           <div className="space-y-8 animate-fade-in">
             <SubmissionShell />
+          </div>
+        )}
+
+        {activeRoute === AppRoute.TASK_GENERATOR && (
+          <div className="space-y-8 animate-fade-in">
+            <TaskGenerationPage />
           </div>
         )}
 

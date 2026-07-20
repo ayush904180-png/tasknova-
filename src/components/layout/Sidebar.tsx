@@ -36,6 +36,7 @@ export function Sidebar({ activeRoute, setActiveRoute }: SidebarProps) {
         { route: AppRoute.DASHBOARD, label: 'Dashboard Console', icon: LayoutGrid },
         { route: AppRoute.SANDBOX, label: 'Task Sandbox', icon: Target },
         { route: AppRoute.SUBMISSIONS, label: 'Submission Ledger', icon: Layers },
+        { route: AppRoute.TASK_GENERATOR, label: 'Task Gen Engine', icon: Sparkles },
         { route: AppRoute.IDENTITY, label: 'Secure Portal', icon: Lock },
         { route: AppRoute.ONBOARDING, label: 'Onboarding Loop', icon: Sparkles },
         { route: AppRoute.REWARDS, label: 'Rewards Index', icon: Award },
